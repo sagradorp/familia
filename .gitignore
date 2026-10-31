@@ -1,0 +1,17 @@
+# Nunca versionar
+.env
+*.key
+*.pem
+*.csv
+*.xlsx
+*.pdf
+*.docx
+*.mp4
+*.mp3
+*.m4a
+*.ogg
+documentos/
+**/documentos/
+node_modules/
+.DS_Store
+Thumbs.db
