@@ -23,4 +23,4 @@ Apelido deste Fibo: [A CONFIRMAR].
 
 ## Estado
 
-Criado em 31/10/2026, com esqueleto mínimo. Repositório: conta pessoal da Rafaela no GitHub, privado, só ela [A CRIAR, depois do 2FA].
+Criado em 31/10/2026, com esqueleto mínimo. Repositório: `sagradorp/familia` no GitHub, privado, só a Rafaela (desde 31/10/2026).
