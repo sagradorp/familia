@@ -2,7 +2,7 @@
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700;800&family=Merriweather+Sans:wght@300;400;600;700&display=swap">
 <style>
-/* Layout: mesma família do Fibo (faixa escura, abas, coluna de leitura), com cor própria: azul de azulejo e um vermelho de telha como sinal. Semana e cardápio são grades de sete dias; o resto são listas curtas. */
+/* Layout: mesma família do Fibo (faixa escura, coluna de leitura), com cor própria: azul de azulejo e um vermelho de telha como sinal. Uma página só, sem abas: a semana no topo junta tudo o que tem data; abaixo, cada parte com a sua caixa de anotar. */
 :root{
   --ink:#16243A; --ink-2:#1E3050; --bg:#F2F5F9; --card:#FFFFFF; --fg:#1A2433; --muted:#5F6B7D; --line:#D7DEE8; --soft:#E6ECF4;
   --acento:#2C5F94; --acento-escuro:#1E4670; --telha:#D9603F; --ok:#2E8A5F; --warn:#C9760A;
@@ -15,9 +15,10 @@
   --ink:#0C1422; --ink-2:#14203A; --bg:#111722; --card:#19212F; --fg:#E7ECF3; --muted:#9DA9BA; --line:#2C3748; --soft:#212B3B;
   --acento:#7FA9D8; --acento-escuro:#B9D2EE; --telha:#F0835F; --ok:#4CC08A; --warn:#F2A33A; color-scheme:dark }
 *{box-sizing:border-box}
+html{scroll-padding-top:calc(env(safe-area-inset-top,0px) + 56px)}
 body{background:var(--bg);color:var(--fg);font-family:var(--body);font-size:14px;line-height:1.5;margin:0}
 body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--ink)}
-.in{max-width:960px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.in{max-width:1000px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
 .faixa{background:var(--ink);color:#F2F5F9}
 .faixa .in{padding-block:22px 18px;display:grid;grid-template-columns:auto 1fr;gap:8px 28px;align-items:end}
 .marca{font-family:var(--display);font-weight:800;font-size:40px;line-height:.9;letter-spacing:-.03em}
@@ -26,134 +27,311 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 .frase{font-family:var(--display);font-weight:600;font-size:18px;line-height:1.25;text-wrap:balance;max-width:52ch}
 .frase small{display:block;font-family:var(--body);font-weight:400;font-size:12px;color:#9DA9BA;margin-top:6px}
 @media (max-width:560px){ .faixa .in{grid-template-columns:1fr} .marca{font-size:34px} }
-.tabs{background:var(--ink-2);position:sticky;top:env(safe-area-inset-top,0px);z-index:5}
-.tabs .in{display:flex;gap:4px;overflow-x:auto}
-.tabs button{font:inherit;font-family:var(--display);font-weight:600;font-size:13px;padding:12px 14px;border:0;border-bottom:3px solid transparent;background:none;color:#9DA9BA;cursor:pointer;white-space:nowrap}
-.tabs button.on{color:#F2F5F9;border-bottom-color:var(--telha)}
-.tabs button:focus-visible{outline:2px solid var(--telha);outline-offset:-2px}
-main .in{padding-block:20px 56px}
-h2{font-family:var(--display);font-size:13px;letter-spacing:.1em;text-transform:uppercase;color:var(--acento-escuro);margin:28px 0 10px;display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
-h2:first-child{margin-top:4px}
+.atalhos{background:var(--ink-2);position:sticky;top:env(safe-area-inset-top,0px);z-index:5}
+.atalhos .in{display:flex;gap:4px;overflow-x:auto}
+.atalhos a{font-family:var(--display);font-weight:600;font-size:13px;padding:12px 12px;color:#9DA9BA;text-decoration:none;white-space:nowrap;border-bottom:3px solid transparent}
+.atalhos a:hover{color:#F2F5F9;border-bottom-color:var(--telha)}
+.atalhos a:focus-visible{outline:2px solid var(--telha);outline-offset:-2px}
+main .in{padding-block:16px 56px}
+.aviso{font-size:13px;margin:4px 0 0;padding:8px 10px;border-radius:8px;background:var(--soft);border-left:3px solid var(--telha)}
+section.parte{padding-top:22px}
+h2{font-family:var(--display);font-size:13px;letter-spacing:.1em;text-transform:uppercase;color:var(--acento-escuro);margin:0 0 10px;display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
 h2 span{color:var(--muted);font-weight:400;letter-spacing:0;text-transform:none;font-family:var(--body);font-size:12px}
-.vazio{background:var(--card);border:1px dashed var(--line);border-radius:10px;padding:14px;color:var(--muted);font-size:13px}
-.vazio code,.pasta{font-family:ui-monospace,Consolas,monospace;font-size:11px}
-.pasta{color:var(--muted)}
+.vazio{background:var(--card);border:1px dashed var(--line);border-radius:10px;padding:12px 14px;color:var(--muted);font-size:13px}
+.pasta,code{font-family:ui-monospace,Consolas,monospace;font-size:11px}
+.pasta{color:var(--muted);margin:6px 0 0}
+input,select,textarea{font:inherit;padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--fg);min-width:0}
+textarea{resize:vertical;min-height:64px;width:100%}
+button.prim{font:inherit;font-family:var(--display);font-weight:600;padding:8px 14px;border:0;border-radius:8px;background:var(--acento);color:#fff;cursor:pointer}
+button.mini{font:inherit;font-size:12px;padding:4px 8px;border:1px solid var(--line);border-radius:6px;background:var(--card);color:var(--fg);cursor:pointer}
+button.mini:hover{border-color:var(--acento)}
+button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px solid var(--acento);outline-offset:1px}
+form.caixa{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px;display:grid;gap:6px;margin-bottom:8px}
+form.caixa .linha{display:flex;gap:6px;flex-wrap:wrap}
+form.caixa input[type=text]{flex:1 1 220px}
+.status{font-size:12px;color:var(--muted);min-height:1em}
+.status.err{color:var(--warn)}
+/* semana */
+.semana{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px}
+.dia-col{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:8px;min-width:0;min-height:110px;display:flex;flex-direction:column;gap:5px}
+.dia-col.hoje{border-color:var(--telha);box-shadow:inset 0 3px 0 var(--telha)}
+.dia-col.passou{opacity:.6}
+.dia-col h3{font-family:var(--display);font-size:12px;margin:0;color:var(--muted);display:flex;justify-content:space-between;gap:4px}
+.dia-col h3 b{color:var(--fg);font-variant-numeric:tabular-nums}
+.it{font-size:12px;line-height:1.35;padding:4px 6px;border-radius:6px;background:var(--soft);overflow-wrap:anywhere}
+.it i{font-style:normal;display:block;font-size:10px;color:var(--acento-escuro);text-transform:uppercase;letter-spacing:.06em}
+.it.feito{text-decoration:line-through;color:var(--muted);background:transparent}
+.nada{font-size:11px;color:var(--muted)}
+@media (max-width:760px){ .semana{grid-template-columns:1fr} .dia-col{min-height:0} }
+/* cardápio */
 .rolar{overflow-x:auto;background:var(--card);border:1px solid var(--line);border-radius:10px}
-.grade{border-collapse:collapse;width:100%;min-width:640px;font-size:13px}
-.grade th,.grade td{border-bottom:1px solid var(--line);padding:8px 10px;text-align:left;vertical-align:top}
-.grade thead th{font-family:var(--display);font-size:12px;font-weight:600;color:var(--muted);white-space:nowrap}
-.grade thead th b{display:block;font-size:15px;color:var(--fg);font-variant-numeric:tabular-nums}
-.grade thead th.hoje{color:var(--telha)} .grade thead th.hoje b{color:var(--telha)}
-.grade tbody th{font-family:var(--display);font-size:12px;font-weight:600;color:var(--acento-escuro);white-space:nowrap;width:1%}
-.grade td{color:var(--muted)}
+.grade{border-collapse:collapse;width:100%;min-width:640px;font-size:12px}
+.grade th,.grade td{border-bottom:1px solid var(--line);padding:7px 8px;text-align:left;vertical-align:top}
+.grade thead th{font-family:var(--display);font-weight:600;color:var(--muted);white-space:nowrap}
+.grade thead th b{display:block;font-size:14px;color:var(--fg);font-variant-numeric:tabular-nums}
+.grade thead th.hoje,.grade thead th.hoje b{color:var(--telha)}
+.grade tbody th{font-family:var(--display);font-weight:600;color:var(--acento-escuro);white-space:nowrap;width:1%}
 .grade td.hoje{background:var(--soft)}
+.grade td .vz{color:var(--muted)}
+.grade td div+div{margin-top:3px}
 .grade tr:last-child th,.grade tr:last-child td{border-bottom:0}
-.duas{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr));gap:12px;align-items:start}
-.bloco{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px 14px;min-width:0}
-.bloco h3{font-family:var(--display);font-size:15px;margin:0 0 2px}
-.bloco p{margin:6px 0 0;font-size:13px;color:var(--muted)}
-.setores{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
-.setores span{font-size:12px;padding:2px 10px;border-radius:999px;background:var(--soft);color:var(--acento-escuro)}
-.dinheiro{display:grid;gap:10px}
-.dinheiro .bloco{display:grid;grid-template-columns:150px 1fr;gap:12px;align-items:baseline}
-.dinheiro .bloco h3{margin:0}
-.dinheiro .bloco p{margin:0}
+/* listas */
+.lista{display:grid;gap:6px}
+.item{display:grid;grid-template-columns:26px 1fr auto;gap:10px;align-items:start;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:8px 10px}
+.item.feito{background:var(--soft);border-color:transparent}
+.item.feito .tx{color:var(--muted);text-decoration:line-through;text-decoration-color:var(--line)}
+.item input[type=checkbox]{width:20px;height:20px;margin:1px 0 0;accent-color:var(--acento)}
+.tx{min-width:0;overflow-wrap:anywhere}
+.tx small{display:block;font-size:11px;color:var(--muted)}
+.chip{display:inline-block;font-size:11px;font-weight:600;padding:0 8px;border-radius:999px;background:var(--soft);color:var(--acento-escuro);margin-right:6px}
+.setor{font-family:var(--display);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:10px 0 2px}
+.setor:first-child{margin-top:0}
+.duas{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr));gap:22px 16px;align-items:start}
+.duas>section.parte{padding-top:0}
+.dinheiro{display:grid;gap:8px}
+.dinheiro .bloco{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 14px;display:grid;grid-template-columns:150px 1fr;gap:12px;align-items:baseline}
+.dinheiro h3{font-family:var(--display);font-size:14px;margin:0}
+.dinheiro p{margin:0;font-size:13px;color:var(--muted)}
 @media (max-width:560px){ .dinheiro .bloco{grid-template-columns:1fr;gap:2px} }
-.aviso{font-size:13px;margin:0 0 14px;padding:8px 10px;border-radius:8px;background:var(--soft);border-left:3px solid var(--telha)}
+.mudar{margin-top:36px;border-top:1px solid var(--line);padding-top:16px}
+.mudar h3{font-family:var(--display);font-size:13px;margin:0 0 6px}
+form.pedido{display:grid;gap:6px}
+form.pedido .linha{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.pedidos{display:grid;gap:6px;margin-top:10px}
+.ped{font-size:13px;background:var(--soft);border-radius:8px;padding:8px 10px;white-space:pre-wrap;overflow-wrap:anywhere}
+.ped small{display:block;color:var(--muted);font-size:11px;margin-top:2px}
+.ped .resp{display:block;margin-top:6px;color:var(--ok)}
 </style>
 
 <header class="faixa"><div class="in">
   <div class="marca">Fibo <i>·</i> Casa<small>Família · só tua</small></div>
-  <div class="frase">A semana da casa, a comida, a escola e o dinheiro, num lugar só.<small>Esqueleto aprovado em 31/10/2026. Os dados da família entram depois da troca para a conta pessoal.</small></div>
+  <div class="frase">A semana da casa, a comida, a escola e o que está parado, numa página só.<small id="carimbo">Esperando o banco da página.</small></div>
 </div></header>
 
-<nav class="tabs" role="tablist"><div class="in">
-  <button id="tab-semana" class="on" data-tab="semana" role="tab">Semana</button>
-  <button id="tab-cardapio" data-tab="cardapio" role="tab">Cardápio e compras</button>
-  <button id="tab-escola" data-tab="escola" role="tab">Escola</button>
-  <button id="tab-casa" data-tab="casa" role="tab">Casa</button>
-  <button id="tab-espera" data-tab="espera" role="tab">Em espera</button>
-  <button id="tab-dinheiro" data-tab="dinheiro" role="tab">Dinheiro</button>
+<nav class="atalhos" aria-label="Partes da página"><div class="in">
+  <a href="#semana">Semana</a><a href="#cardapio">Cardápio</a><a href="#compras">Compras</a><a href="#escola">Escola</a><a href="#casa">Casa</a><a href="#espera">Em espera</a><a href="#dinheiro">Dinheiro</a>
 </div></nav>
 
-<main>
-  <section id="sec-semana" class="in">
-    <h2>Esta semana <span id="semana-rotulo"></span></h2>
-    <div class="rolar"><table class="grade" id="g-semana"></table></div>
-    <h2>Como entra</h2>
-    <div class="vazio">A rotina de alimentação e limpeza vai em <code>FAMILIA/rotina/</code>. O cérebro encaixa cada item nos horários livres da tua agenda pessoal e mostra aqui, dia a dia.</div>
+<main><div class="in">
+  <p class="aviso">Até a troca de conta (02 ou 03/11/2026), esta página fica na conta do suporte. Anota à vontade, mas sem nome das crianças, saúde ou valores de dinheiro; isso entra depois da troca.</p>
+
+  <section class="parte" id="semana">
+    <h2>Semana <span id="semana-rotulo"></span></h2>
+    <form class="caixa" data-secao="semana">
+      <div class="linha">
+        <input type="text" id="cx-se-t" name="t" placeholder="Rotina ou compromisso: faxina do banheiro, levar ao judô…" aria-label="Item da semana" required>
+        <select id="cx-se-x" name="x" aria-label="Tipo"><option>Alimentação</option><option>Limpeza</option><option>Família</option></select>
+        <input type="date" id="cx-se-d" name="d" aria-label="Dia" required>
+        <button class="prim" type="submit">Anotar</button>
+      </div>
+      <div class="status"></div>
+    </form>
+    <div class="semana" id="g-semana"></div>
+    <p class="pasta">Junta tudo o que tem data: semana, cardápio e escola. O cérebro encaixa nos horários livres da tua agenda pessoal. FAMILIA/rotina/</p>
   </section>
 
-  <section id="sec-cardapio" class="in" hidden>
-    <h2>Cardápio da semana <span>os lanches entram junto</span></h2>
+  <section class="parte" id="cardapio">
+    <h2>Cardápio <span>os lanches entram junto; o que precisar comprar vai para a lista abaixo</span></h2>
+    <form class="caixa" data-secao="cardapio">
+      <div class="linha">
+        <input type="text" id="cx-ca-t" name="t" placeholder="Prato ou lanche" aria-label="Prato" required>
+        <select id="cx-ca-x" name="x" aria-label="Refeição"><option>Café</option><option>Almoço</option><option>Lanche</option><option>Jantar</option></select>
+        <input type="date" id="cx-ca-d" name="d" aria-label="Dia" required>
+        <button class="prim" type="submit">Anotar</button>
+      </div>
+      <div class="status"></div>
+    </form>
     <div class="rolar"><table class="grade" id="g-cardapio"></table></div>
-    <h2>Lista de compras <span>sai do cardápio; o que já tem em casa não entra</span></h2>
-    <div class="bloco">
-      <h3>Nenhum item ainda</h3>
-      <p>Quando o cardápio estiver montado, a lista aparece aqui separada por seção do mercado, com botão de copiar.</p>
-      <div class="setores"><span>Hortifrúti</span><span>Açougue e peixaria</span><span>Frios e laticínios</span><span>Mercearia</span><span>Lanches</span><span>Limpeza</span></div>
-    </div>
     <p class="pasta">FAMILIA/cardapio-compras/</p>
   </section>
 
-  <section id="sec-escola" class="in" hidden>
-    <div class="duas">
-      <div class="bloco"><h3>Calendário da escola</h3><p>Provas, reuniões, feriados e eventos, com a data. Vazio por enquanto.</p></div>
-      <div class="bloco"><h3>Recados</h3><p>O que a escola mandou e ainda pede resposta ou ação. Vazio por enquanto.</p></div>
-      <div class="bloco"><h3>Para organizar</h3><p>Material, uniforme, autorizações, pagamentos da escola. Vazio por enquanto.</p></div>
-    </div>
-    <h2>Como entra</h2>
-    <div class="vazio">Calendário e recados da escola vão em <code>FAMILIA/filhos-familia/</code>. Dado de saúde e de menores não sai da pasta da Casa.</div>
+  <section class="parte" id="compras">
+    <h2>Compras <span>marca o que já está no carrinho</span></h2>
+    <form class="caixa" data-secao="compras">
+      <div class="linha">
+        <input type="text" id="cx-co-t" name="t" placeholder="Item e quantidade: 2 kg de batata" aria-label="Item de compra" required>
+        <select id="cx-co-x" name="x" aria-label="Seção do mercado"><option>Hortifrúti</option><option>Açougue e peixaria</option><option>Frios e laticínios</option><option>Mercearia</option><option>Lanches</option><option>Limpeza</option><option>Outros</option></select>
+        <button class="prim" type="submit">Anotar</button>
+      </div>
+      <div class="status"></div>
+    </form>
+    <div class="lista" id="l-compras"></div>
+    <div style="margin-top:8px;display:flex;gap:8px;flex-wrap:wrap"><button class="mini" id="copiar-compras" type="button">Copiar a lista</button><button class="mini" id="limpar-compras" type="button">Tirar os marcados</button></div>
   </section>
 
-  <section id="sec-casa" class="in" hidden>
-    <div class="duas">
-      <div class="bloco"><h3>Manutenção</h3><p>O que precisa de conserto ou revisão, quem faz e quando. Vazio por enquanto.</p></div>
-      <div class="bloco"><h3>Ideias para a casa</h3><p>O que vocês querem fazer na casa, sem data ainda. Vazio por enquanto.</p></div>
-    </div>
-    <p class="pasta">FAMILIA/casa-manutencao/</p>
-  </section>
+  <div class="duas">
+    <section class="parte" id="escola">
+      <h2>Escola <span>datas, recados, o que organizar</span></h2>
+      <form class="caixa" data-secao="escola">
+        <div class="linha">
+          <input type="text" id="cx-es-t" name="t" placeholder="Reunião de pais, material de artes…" aria-label="Item da escola" required>
+          <select id="cx-es-x" name="x" aria-label="Tipo"><option>Data</option><option>Recado</option><option>Organizar</option></select>
+          <input type="date" id="cx-es-d" name="d" aria-label="Dia (opcional)">
+          <button class="prim" type="submit">Anotar</button>
+        </div>
+        <div class="status"></div>
+      </form>
+      <div class="lista" id="l-escola"></div>
+      <p class="pasta">FAMILIA/filhos-familia/</p>
+    </section>
 
-  <section id="sec-espera" class="in" hidden>
+    <section class="parte" id="casa">
+      <h2>Casa <span>manutenção e ideias</span></h2>
+      <form class="caixa" data-secao="casa">
+        <div class="linha">
+          <input type="text" id="cx-cs-t" name="t" placeholder="Trocar o chuveiro, pintar o quarto…" aria-label="Item da casa" required>
+          <select id="cx-cs-x" name="x" aria-label="Tipo"><option>Manutenção</option><option>Ideia</option></select>
+          <input type="date" id="cx-cs-d" name="d" aria-label="Dia (opcional)">
+          <button class="prim" type="submit">Anotar</button>
+        </div>
+        <div class="status"></div>
+      </form>
+      <div class="lista" id="l-casa"></div>
+      <p class="pasta">FAMILIA/casa-manutencao/</p>
+    </section>
+  </div>
+
+  <section class="parte" id="espera">
     <h2>Em espera <span>o que está guardado ou esperando alguma coisa</span></h2>
-    <div class="vazio">Nada em espera ainda. Cada item vai aparecer com o que é, desde quando está parado e o que falta para sair do lugar (dinheiro, preço, uma decisão). Pasta: <code>FAMILIA/em-espera/</code>.</div>
+    <form class="caixa" data-secao="espera">
+      <div class="linha">
+        <input type="text" id="cx-ep-t" name="t" placeholder="O que é: sofá novo, viagem de julho…" aria-label="Item em espera" required>
+        <input type="text" id="cx-ep-x" name="x" placeholder="Esperando o quê: preço, decisão, mês" aria-label="Esperando o quê">
+        <button class="prim" type="submit">Anotar</button>
+      </div>
+      <div class="status"></div>
+    </form>
+    <div class="lista" id="l-espera"></div>
+    <p class="pasta">FAMILIA/em-espera/</p>
   </section>
 
-  <section id="sec-dinheiro" class="in" hidden>
-    <p class="aviso">Ainda falta a fonte dos números: extrato, planilha ou app do banco. Até lá, esta aba fica vazia.</p>
+  <section class="parte" id="dinheiro">
+    <h2>Dinheiro <span>em texto, sem painel; os números entram depois da troca</span></h2>
     <div class="dinheiro">
       <div class="bloco"><h3>Acumulando</h3><p>Quanto está entrando na reserva e para quê.</p></div>
-      <div class="bloco"><h3>Gastando demais</h3><p>Onde o gasto passou do que vocês esperavam no mês, com a comparação.</p></div>
+      <div class="bloco"><h3>Gastando demais</h3><p>Onde o gasto passou do esperado no mês, com a comparação.</p></div>
       <div class="bloco"><h3>Saldo</h3><p>Como fecha o mês, em uma frase, com a data do número.</p></div>
     </div>
-    <p class="pasta">FAMILIA/contas/</p>
+    <p class="pasta">Falta dizer de onde vêm os números: extrato, planilha ou app do banco. FAMILIA/contas/</p>
   </section>
-</main>
+
+  <div class="mudar">
+    <h3>O que mudar nesta página</h3>
+    <form class="pedido">
+      <textarea id="pd-casa" name="t" placeholder="Escreve o que tirar, juntar, acrescentar ou mudar. O cérebro lê na sessão seguinte." aria-label="O que mudar na página Casa" required></textarea>
+      <div class="linha">
+        <select id="pd-casa-parte" name="x" aria-label="Parte da página"><option>Página toda</option><option>Semana</option><option>Cardápio</option><option>Compras</option><option>Escola</option><option>Casa</option><option>Em espera</option><option>Dinheiro</option></select>
+        <button class="prim" type="submit">Mandar para o cérebro</button><span class="status"></span>
+      </div>
+    </form>
+    <div class="pedidos" id="l-pedidos"></div>
+  </div>
+</div></main>
 
 <script>
 const $=s=>document.querySelector(s);
+const itens=new Map(), pedidos=new Map();
+let db=null;
 const pad=n=>String(n).padStart(2,'0');
-const DIAS=['seg','ter','qua','qui','sex','sáb','dom'];
-const hoje=new Date(); hoje.setHours(0,0,0,0);
-const seg=new Date(hoje); seg.setDate(hoje.getDate()-((hoje.getDay()+6)%7));
-const semana=DIAS.map((n,i)=>{ const d=new Date(seg); d.setDate(seg.getDate()+i); return {n,d,hoje:+d===+hoje}; });
-const fim=semana[6].d;
-$('#semana-rotulo').textContent=pad(seg.getDate())+'/'+pad(seg.getMonth()+1)+' a '+pad(fim.getDate())+'/'+pad(fim.getMonth()+1)+'/'+fim.getFullYear();
-function grade(sel,linhas){
-  const cab='<thead><tr><th></th>'+semana.map(s=>`<th class="${s.hoje?'hoje':''}">${s.n}<b>${pad(s.d.getDate())}/${pad(s.d.getMonth()+1)}</b></th>`).join('')+'</tr></thead>';
-  const corpo='<tbody>'+linhas.map(l=>`<tr><th>${l}</th>`+semana.map(s=>`<td class="${s.hoje?'hoje':''}">—</td>`).join('')+'</tr>').join('')+'</tbody>';
-  $(sel).innerHTML=cab+corpo;
+const iso=d=>d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());
+const hojeIso=()=>iso(new Date());
+const br=s=>s?s.slice(8,10)+'/'+s.slice(5,7)+'/'+s.slice(0,4):'';
+const brc=s=>s?s.slice(8,10)+'/'+s.slice(5,7):'';
+const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+function st(f,msg,err){ const e=f.querySelector('.status'); if(!e) return; e.textContent=msg; e.classList.toggle('err',!!err); }
+function carimbo(){ const a=new Date(); return br(hojeIso())+' às '+a.getHours()+'h'+pad(a.getMinutes()); }
+const NOME_SECAO={semana:'Semana',cardapio:'Cardápio',escola:'Escola',casa:'Casa'};
+const REFEICOES=['Café','Almoço','Lanche','Jantar'];
+const SETORES=['Hortifrúti','Açougue e peixaria','Frios e laticínios','Mercearia','Lanches','Limpeza','Outros'];
+
+function semana(){
+  const hoje=new Date(); hoje.setHours(0,0,0,0);
+  const seg=new Date(hoje); seg.setDate(hoje.getDate()-((hoje.getDay()+6)%7));
+  return ['seg','ter','qua','qui','sex','sáb','dom'].map((n,i)=>{ const d=new Date(seg); d.setDate(seg.getDate()+i); return {n,iso:iso(d)}; });
 }
-grade('#g-semana',['Alimentação','Limpeza','Compromissos da família']);
-grade('#g-cardapio',['Café','Almoço','Lanche','Jantar']);
-const ABAS=['semana','cardapio','escola','casa','espera','dinheiro'];
-document.querySelectorAll('.tabs button').forEach(b=>b.addEventListener('click',()=>abrir(b.dataset.tab)));
-function abrir(t){
-  if(!ABAS.includes(t)) t='semana';
-  document.querySelectorAll('.tabs button').forEach(b=>b.classList.toggle('on',b.dataset.tab===t));
-  document.querySelectorAll('main section').forEach(s=>s.hidden=s.id!=='sec-'+t);
-  if(location.hash!=='#'+t) history.replaceState(null,'','#'+t);
+function item(t,detalhe){
+  const feito=!!t.feito_em;
+  return `<div class="item${feito?' feito':''}" data-id="${esc(t.id)}">
+    <input type="checkbox" id="cb-${esc(t.id)}" ${feito?'checked':''} aria-label="Feito">
+    <div class="tx">${t.extra&&detalhe!==false?`<span class="chip">${esc(t.extra)}</span>`:''}${esc(t.texto)}<small>${t.dia?br(t.dia)+' · ':''}${esc(t.quando||'')}</small></div>
+    <div><button class="mini" data-a="apagar" type="button">Apagar</button></div>
+  </div>`;
 }
-window.addEventListener('hashchange',()=>abrir(location.hash.slice(1)));
-abrir(location.hash.slice(1)||'semana');
+function render(){
+  const h=hojeIso(), S=semana(), all=[...itens.values()].sort((a,b)=>(a.dia||'9').localeCompare(b.dia||'9')||String(a.criado_em).localeCompare(String(b.criado_em)));
+  $('#semana-rotulo').textContent=brc(S[0].iso)+' a '+br(S[6].iso);
+  $('#g-semana').innerHTML=S.map(d=>{ const its=all.filter(t=>t.dia===d.iso&&NOME_SECAO[t.secao]);
+    return `<div class="dia-col${d.iso===h?' hoje':''}${d.iso<h?' passou':''}"><h3>${d.n}<b>${brc(d.iso)}</b></h3>${its.length?its.map(t=>`<div class="it${t.feito_em?' feito':''}"><i>${esc(t.secao==='semana'?t.extra:NOME_SECAO[t.secao]+(t.extra?' · '+t.extra:''))}</i>${esc(t.texto)}</div>`).join(''):'<div class="nada">livre</div>'}</div>`; }).join('');
+  const cab='<thead><tr><th></th>'+S.map(d=>`<th class="${d.iso===h?'hoje':''}">${d.n}<b>${brc(d.iso)}</b></th>`).join('')+'</tr></thead>';
+  const corpo='<tbody>'+REFEICOES.map(r=>`<tr><th>${r}</th>`+S.map(d=>{ const ps=all.filter(t=>t.secao==='cardapio'&&t.dia===d.iso&&t.extra===r);
+    return `<td class="${d.iso===h?'hoje':''}">${ps.length?ps.map(p=>`<div>${esc(p.texto)}</div>`).join(''):'<span class="vz">—</span>'}</td>`; }).join('')+'</tr>').join('')+'</tbody>';
+  $('#g-cardapio').innerHTML=cab+corpo;
+  const compras=all.filter(t=>t.secao==='compras');
+  $('#l-compras').innerHTML=compras.length?SETORES.map(s=>{ const cs=compras.filter(t=>(t.extra||'Outros')===s); return cs.length?`<div class="setor">${s}</div>`+cs.map(t=>item(t,false)).join(''):''; }).join(''):'<div class="vazio">Lista vazia. Anota acima o que falta em casa.</div>';
+  for(const [sec,vazio] of [['escola','Nada da escola anotado ainda.'],['casa','Nenhuma manutenção ou ideia anotada ainda.'],['espera','Nada em espera ainda.']]){
+    const xs=all.filter(t=>t.secao===sec).sort((a,b)=>(!!a.feito_em-!!b.feito_em));
+    $('#l-'+sec).innerHTML=xs.length?xs.map(t=>item(t)).join(''):`<div class="vazio">${vazio}</div>`;
+  }
+}
+function renderPedidos(){
+  const ps=[...pedidos.values()].sort((x,y)=>String(y.criado_em).localeCompare(String(x.criado_em)));
+  $('#l-pedidos').innerHTML=ps.map(p=>`<div class="ped">${esc(p.texto)}<small>${esc(p.parte||'')} · ${esc(p.quando||'')}${p.resposta?'':' · o cérebro ainda não leu'}</small>${p.resposta?`<span class="resp">${esc(p.resposta)}</span>`:''}</div>`).join('');
+}
+render();
+
+const main=document.querySelector('main');
+main.addEventListener('submit',async e=>{
+  const f=e.target; e.preventDefault();
+  const tx=(f.elements.t.value||'').trim(); if(!tx) return;
+  if(!db){ st(f,'Sem acesso ao banco nesta visualização. Abre a página logada no claude.ai.',true); return; }
+  const agora=new Date(); st(f,'Salvando…');
+  try{
+    if(f.matches('form.pedido')){
+      await db.collection('pedidos').doc('p'+agora.getTime()).set({pagina:'casa',parte:f.elements.x.value,texto:tx,quando:carimbo(),criado_em:agora.toISOString(),resposta:''});
+      f.elements.t.value=''; st(f,'Mandado. O cérebro lê na sessão seguinte.'); return;
+    }
+    const doc={secao:f.dataset.secao,texto:tx,extra:f.elements.x?f.elements.x.value.trim():'',dia:f.elements.d?f.elements.d.value:'',feito_em:'',quando:carimbo(),criado_em:agora.toISOString()};
+    await db.collection('itens').doc('i'+agora.getTime()).set(doc);
+    f.elements.t.value=''; if(f.elements.d) f.elements.d.value=''; if(f.elements.x&&f.elements.x.tagName==='INPUT') f.elements.x.value='';
+    st(f,'Anotado.');
+  }catch(err){ st(f,err&&err.code==='quota_exceeded'?'O banco da página está cheio. Avisa o cérebro.':'Não deu para salvar agora. Tenta de novo em instantes.',true); }
+});
+main.addEventListener('change',async e=>{
+  if(!e.target.matches('.item input[type=checkbox]')||!db) return;
+  const id=e.target.closest('.item').dataset.id;
+  try{ await db.collection('itens').doc(id).update({feito_em:e.target.checked?hojeIso():''}); }catch(err){ e.target.checked=!e.target.checked; }
+});
+main.addEventListener('click',async e=>{
+  const b=e.target.closest('button[data-a="apagar"]'); if(!b||!db) return;
+  const linha=b.closest('.item');
+  if(b.dataset.ok!=='1'){ b.dataset.ok='1'; b.textContent='Confirmar'; setTimeout(()=>{ if(b.isConnected){ b.dataset.ok=''; b.textContent='Apagar'; } },3000); return; }
+  try{ await db.collection('itens').doc(linha.dataset.id).delete(); }catch(err){ b.textContent='Não deu'; }
+});
+$('#copiar-compras').addEventListener('click',async e=>{
+  const b=e.currentTarget, abertos=[...itens.values()].filter(t=>t.secao==='compras'&&!t.feito_em);
+  const txt=SETORES.map(s=>{ const cs=abertos.filter(t=>(t.extra||'Outros')===s); return cs.length?s+'\n'+cs.map(t=>'- '+t.texto).join('\n'):''; }).filter(Boolean).join('\n\n');
+  if(!txt){ b.textContent='Lista vazia'; setTimeout(()=>b.textContent='Copiar a lista',1600); return; }
+  try{ await navigator.clipboard.writeText(txt); b.textContent='Copiada'; }catch(err){ b.textContent='Não deu: copia à mão'; }
+  setTimeout(()=>b.textContent='Copiar a lista',1800);
+});
+$('#limpar-compras').addEventListener('click',async e=>{
+  const b=e.currentTarget; if(!db) return;
+  const marcados=[...itens.values()].filter(t=>t.secao==='compras'&&t.feito_em);
+  if(!marcados.length){ b.textContent='Nada marcado'; setTimeout(()=>b.textContent='Tirar os marcados',1600); return; }
+  if(b.dataset.ok!=='1'){ b.dataset.ok='1'; b.textContent='Confirmar: tirar '+marcados.length; setTimeout(()=>{ b.dataset.ok=''; b.textContent='Tirar os marcados'; },3000); return; }
+  b.dataset.ok=''; b.textContent='Tirando…';
+  for(const t of marcados){ try{ await db.collection('itens').doc(t.id).delete(); }catch(err){} }
+  b.textContent='Tirar os marcados';
+});
+
+function assinar(nome,mapa,depois,onErr){
+  return db.collection(nome).onSnapshot(snap=>{ snap.docChanges().forEach(ch=>{ if(ch.type==='removed') mapa.delete(ch.doc.id); else mapa.set(ch.doc.id,Object.assign({id:ch.doc.id},ch.doc.data())); }); depois(); },onErr||(()=>{}));
+}
+(async()=>{
+  const espera=setTimeout(()=>{ $('#carimbo').textContent='O banco da página não respondeu ainda. Abre a página logada no claude.ai.'; },10000);
+  db=await window.claude?.use?.('db');
+  if(!db){ clearTimeout(espera); $('#carimbo').textContent='Sem acesso ao banco nesta visualização. Abre a página logada no claude.ai para anotar.'; return; }
+  assinar('itens',itens,()=>{ clearTimeout(espera); $('#carimbo').textContent='Pronta para anotar.'; render(); },()=>{ clearTimeout(espera); $('#carimbo').textContent='Não foi possível ler o banco da página.'; });
+  assinar('pedidos',pedidos,renderPedidos);
+})();
 </script>

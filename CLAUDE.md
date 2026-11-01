@@ -17,7 +17,7 @@ Apelido deste Fibo: [A CONFIRMAR].
 
 ## Página Casa (esqueleto aprovado em 31/10/2026)
 
-| Aba | Pasta |
+| Parte | Pasta |
 |---|---|
 | Semana: rotina de alimentação e limpeza encaixada na agenda pessoal | `rotina/` |
 | Cardápio e compras: cardápio da semana, com lanches; a lista de compras sai dele | `cardapio-compras/` |
@@ -30,7 +30,7 @@ Amigas, marido, vida social e hobbies moram em `../RAFAELA/` (`social/`, `hobbie
 
 ## Regras deste mundo
 
-- A página deste mundo, Casa (https://claude.ai/artifact/VWmbNC2pWwVqXzZDpqiwWu, fonte `gestao/casa.html`), é só da Rafaela e nunca é compartilhada. Publicada em 31/10/2026 só com o esqueleto, na conta do suporte; dados de escola, família e finanças entram só depois da troca para a conta pessoal do claude.ai.
+- A página deste mundo, Casa (https://claude.ai/artifact/VWmbNC2pWwVqXzZDpqiwWu, fonte `gestao/casa.html`), é só da Rafaela e nunca é compartilhada. Uma página só, com caixa de anotar em cada parte (banco da página: coleções `itens`, campo `secao`, e `pedidos`). Até a troca para a conta pessoal do claude.ai ela fica na conta do suporte: sem nome das crianças, saúde ou valores de dinheiro.
 - Dado de saúde e de menores não sai desta pasta.
 - Pode ler a agenda e as pendências da E&P para montar o dia da Rafaela; nunca escreve na pasta da E&P a partir daqui.
 
