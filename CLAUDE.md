@@ -13,11 +13,24 @@ Apelido deste Fibo: [A CONFIRMAR].
 
 ## Áreas (subpastas)
 
-`contas/` · `filhos-familia/` · `casa-manutencao/`. Outras podem entrar depois. O negócio do marido mora em `../RAFAELA/negocio-marido`.
+`rotina/` · `cardapio-compras/` · `filhos-familia/` · `casa-manutencao/` · `em-espera/` · `contas/`. Outras podem entrar depois. O negócio do marido mora em `../RAFAELA/negocio-marido`.
+
+## Página Casa (esqueleto aprovado em 31/10/2026)
+
+| Aba | Pasta |
+|---|---|
+| Semana: rotina de alimentação e limpeza encaixada na agenda pessoal | `rotina/` |
+| Cardápio e compras: cardápio da semana, com lanches; a lista de compras sai dele | `cardapio-compras/` |
+| Escola: calendário, recados, o que organizar | `filhos-familia/` |
+| Casa: manutenção e ideias para a casa | `casa-manutencao/` |
+| Em espera: compras guardadas ou esperando | `em-espera/` |
+| Dinheiro: em texto, sem painel; o que acumula, onde gasta demais, saldo | `contas/` |
+
+Amigas, marido, vida social e hobbies moram em `../RAFAELA/` (`social/`, `hobbies/`); aqui só os compromissos que mexem na rotina da família.
 
 ## Regras deste mundo
 
-- A página deste mundo é só da Rafaela e nunca é compartilhada.
+- A página deste mundo é só da Rafaela e nunca é compartilhada. Só é publicada depois da troca para a conta pessoal do claude.ai, porque leva escola, família e finanças.
 - Dado de saúde e de menores não sai desta pasta.
 - Pode ler a agenda e as pendências da E&P para montar o dia da Rafaela; nunca escreve na pasta da E&P a partir daqui.
 
