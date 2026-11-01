@@ -1,0 +1,159 @@
+<title>Casa</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700;800&family=Merriweather+Sans:wght@300;400;600;700&display=swap">
+<style>
+/* Layout: mesma família do Fibo (faixa escura, abas, coluna de leitura), com cor própria: azul de azulejo e um vermelho de telha como sinal. Semana e cardápio são grades de sete dias; o resto são listas curtas. */
+:root{
+  --ink:#16243A; --ink-2:#1E3050; --bg:#F2F5F9; --card:#FFFFFF; --fg:#1A2433; --muted:#5F6B7D; --line:#D7DEE8; --soft:#E6ECF4;
+  --acento:#2C5F94; --acento-escuro:#1E4670; --telha:#D9603F; --ok:#2E8A5F; --warn:#C9760A;
+  --display:"Sora",system-ui,sans-serif; --body:"Merriweather Sans",system-ui,sans-serif;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --ink:#0C1422; --ink-2:#14203A; --bg:#111722; --card:#19212F; --fg:#E7ECF3; --muted:#9DA9BA; --line:#2C3748; --soft:#212B3B;
+  --acento:#7FA9D8; --acento-escuro:#B9D2EE; --telha:#F0835F; --ok:#4CC08A; --warn:#F2A33A; color-scheme:dark } }
+:root[data-theme="dark"]{
+  --ink:#0C1422; --ink-2:#14203A; --bg:#111722; --card:#19212F; --fg:#E7ECF3; --muted:#9DA9BA; --line:#2C3748; --soft:#212B3B;
+  --acento:#7FA9D8; --acento-escuro:#B9D2EE; --telha:#F0835F; --ok:#4CC08A; --warn:#F2A33A; color-scheme:dark }
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:var(--body);font-size:14px;line-height:1.5;margin:0}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--ink)}
+.in{max-width:960px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.faixa{background:var(--ink);color:#F2F5F9}
+.faixa .in{padding-block:22px 18px;display:grid;grid-template-columns:auto 1fr;gap:8px 28px;align-items:end}
+.marca{font-family:var(--display);font-weight:800;font-size:40px;line-height:.9;letter-spacing:-.03em}
+.marca i{font-style:normal;color:var(--telha)}
+.marca small{display:block;font-family:var(--body);font-weight:400;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#9DA9BA;margin-top:8px}
+.frase{font-family:var(--display);font-weight:600;font-size:18px;line-height:1.25;text-wrap:balance;max-width:52ch}
+.frase small{display:block;font-family:var(--body);font-weight:400;font-size:12px;color:#9DA9BA;margin-top:6px}
+@media (max-width:560px){ .faixa .in{grid-template-columns:1fr} .marca{font-size:34px} }
+.tabs{background:var(--ink-2);position:sticky;top:env(safe-area-inset-top,0px);z-index:5}
+.tabs .in{display:flex;gap:4px;overflow-x:auto}
+.tabs button{font:inherit;font-family:var(--display);font-weight:600;font-size:13px;padding:12px 14px;border:0;border-bottom:3px solid transparent;background:none;color:#9DA9BA;cursor:pointer;white-space:nowrap}
+.tabs button.on{color:#F2F5F9;border-bottom-color:var(--telha)}
+.tabs button:focus-visible{outline:2px solid var(--telha);outline-offset:-2px}
+main .in{padding-block:20px 56px}
+h2{font-family:var(--display);font-size:13px;letter-spacing:.1em;text-transform:uppercase;color:var(--acento-escuro);margin:28px 0 10px;display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+h2:first-child{margin-top:4px}
+h2 span{color:var(--muted);font-weight:400;letter-spacing:0;text-transform:none;font-family:var(--body);font-size:12px}
+.vazio{background:var(--card);border:1px dashed var(--line);border-radius:10px;padding:14px;color:var(--muted);font-size:13px}
+.vazio code,.pasta{font-family:ui-monospace,Consolas,monospace;font-size:11px}
+.pasta{color:var(--muted)}
+.rolar{overflow-x:auto;background:var(--card);border:1px solid var(--line);border-radius:10px}
+.grade{border-collapse:collapse;width:100%;min-width:640px;font-size:13px}
+.grade th,.grade td{border-bottom:1px solid var(--line);padding:8px 10px;text-align:left;vertical-align:top}
+.grade thead th{font-family:var(--display);font-size:12px;font-weight:600;color:var(--muted);white-space:nowrap}
+.grade thead th b{display:block;font-size:15px;color:var(--fg);font-variant-numeric:tabular-nums}
+.grade thead th.hoje{color:var(--telha)} .grade thead th.hoje b{color:var(--telha)}
+.grade tbody th{font-family:var(--display);font-size:12px;font-weight:600;color:var(--acento-escuro);white-space:nowrap;width:1%}
+.grade td{color:var(--muted)}
+.grade td.hoje{background:var(--soft)}
+.grade tr:last-child th,.grade tr:last-child td{border-bottom:0}
+.duas{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr));gap:12px;align-items:start}
+.bloco{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px 14px;min-width:0}
+.bloco h3{font-family:var(--display);font-size:15px;margin:0 0 2px}
+.bloco p{margin:6px 0 0;font-size:13px;color:var(--muted)}
+.setores{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.setores span{font-size:12px;padding:2px 10px;border-radius:999px;background:var(--soft);color:var(--acento-escuro)}
+.dinheiro{display:grid;gap:10px}
+.dinheiro .bloco{display:grid;grid-template-columns:150px 1fr;gap:12px;align-items:baseline}
+.dinheiro .bloco h3{margin:0}
+.dinheiro .bloco p{margin:0}
+@media (max-width:560px){ .dinheiro .bloco{grid-template-columns:1fr;gap:2px} }
+.aviso{font-size:13px;margin:0 0 14px;padding:8px 10px;border-radius:8px;background:var(--soft);border-left:3px solid var(--telha)}
+</style>
+
+<header class="faixa"><div class="in">
+  <div class="marca">Fibo <i>·</i> Casa<small>Família · só tua</small></div>
+  <div class="frase">A semana da casa, a comida, a escola e o dinheiro, num lugar só.<small>Esqueleto aprovado em 31/10/2026. Os dados da família entram depois da troca para a conta pessoal.</small></div>
+</div></header>
+
+<nav class="tabs" role="tablist"><div class="in">
+  <button id="tab-semana" class="on" data-tab="semana" role="tab">Semana</button>
+  <button id="tab-cardapio" data-tab="cardapio" role="tab">Cardápio e compras</button>
+  <button id="tab-escola" data-tab="escola" role="tab">Escola</button>
+  <button id="tab-casa" data-tab="casa" role="tab">Casa</button>
+  <button id="tab-espera" data-tab="espera" role="tab">Em espera</button>
+  <button id="tab-dinheiro" data-tab="dinheiro" role="tab">Dinheiro</button>
+</div></nav>
+
+<main>
+  <section id="sec-semana" class="in">
+    <h2>Esta semana <span id="semana-rotulo"></span></h2>
+    <div class="rolar"><table class="grade" id="g-semana"></table></div>
+    <h2>Como entra</h2>
+    <div class="vazio">A rotina de alimentação e limpeza vai em <code>FAMILIA/rotina/</code>. O cérebro encaixa cada item nos horários livres da tua agenda pessoal e mostra aqui, dia a dia.</div>
+  </section>
+
+  <section id="sec-cardapio" class="in" hidden>
+    <h2>Cardápio da semana <span>os lanches entram junto</span></h2>
+    <div class="rolar"><table class="grade" id="g-cardapio"></table></div>
+    <h2>Lista de compras <span>sai do cardápio; o que já tem em casa não entra</span></h2>
+    <div class="bloco">
+      <h3>Nenhum item ainda</h3>
+      <p>Quando o cardápio estiver montado, a lista aparece aqui separada por seção do mercado, com botão de copiar.</p>
+      <div class="setores"><span>Hortifrúti</span><span>Açougue e peixaria</span><span>Frios e laticínios</span><span>Mercearia</span><span>Lanches</span><span>Limpeza</span></div>
+    </div>
+    <p class="pasta">FAMILIA/cardapio-compras/</p>
+  </section>
+
+  <section id="sec-escola" class="in" hidden>
+    <div class="duas">
+      <div class="bloco"><h3>Calendário da escola</h3><p>Provas, reuniões, feriados e eventos, com a data. Vazio por enquanto.</p></div>
+      <div class="bloco"><h3>Recados</h3><p>O que a escola mandou e ainda pede resposta ou ação. Vazio por enquanto.</p></div>
+      <div class="bloco"><h3>Para organizar</h3><p>Material, uniforme, autorizações, pagamentos da escola. Vazio por enquanto.</p></div>
+    </div>
+    <h2>Como entra</h2>
+    <div class="vazio">Calendário e recados da escola vão em <code>FAMILIA/filhos-familia/</code>. Dado de saúde e de menores não sai da pasta da Casa.</div>
+  </section>
+
+  <section id="sec-casa" class="in" hidden>
+    <div class="duas">
+      <div class="bloco"><h3>Manutenção</h3><p>O que precisa de conserto ou revisão, quem faz e quando. Vazio por enquanto.</p></div>
+      <div class="bloco"><h3>Ideias para a casa</h3><p>O que vocês querem fazer na casa, sem data ainda. Vazio por enquanto.</p></div>
+    </div>
+    <p class="pasta">FAMILIA/casa-manutencao/</p>
+  </section>
+
+  <section id="sec-espera" class="in" hidden>
+    <h2>Em espera <span>o que está guardado ou esperando alguma coisa</span></h2>
+    <div class="vazio">Nada em espera ainda. Cada item vai aparecer com o que é, desde quando está parado e o que falta para sair do lugar (dinheiro, preço, uma decisão). Pasta: <code>FAMILIA/em-espera/</code>.</div>
+  </section>
+
+  <section id="sec-dinheiro" class="in" hidden>
+    <p class="aviso">Ainda falta a fonte dos números: extrato, planilha ou app do banco. Até lá, esta aba fica vazia.</p>
+    <div class="dinheiro">
+      <div class="bloco"><h3>Acumulando</h3><p>Quanto está entrando na reserva e para quê.</p></div>
+      <div class="bloco"><h3>Gastando demais</h3><p>Onde o gasto passou do que vocês esperavam no mês, com a comparação.</p></div>
+      <div class="bloco"><h3>Saldo</h3><p>Como fecha o mês, em uma frase, com a data do número.</p></div>
+    </div>
+    <p class="pasta">FAMILIA/contas/</p>
+  </section>
+</main>
+
+<script>
+const $=s=>document.querySelector(s);
+const pad=n=>String(n).padStart(2,'0');
+const DIAS=['seg','ter','qua','qui','sex','sáb','dom'];
+const hoje=new Date(); hoje.setHours(0,0,0,0);
+const seg=new Date(hoje); seg.setDate(hoje.getDate()-((hoje.getDay()+6)%7));
+const semana=DIAS.map((n,i)=>{ const d=new Date(seg); d.setDate(seg.getDate()+i); return {n,d,hoje:+d===+hoje}; });
+const fim=semana[6].d;
+$('#semana-rotulo').textContent=pad(seg.getDate())+'/'+pad(seg.getMonth()+1)+' a '+pad(fim.getDate())+'/'+pad(fim.getMonth()+1)+'/'+fim.getFullYear();
+function grade(sel,linhas){
+  const cab='<thead><tr><th></th>'+semana.map(s=>`<th class="${s.hoje?'hoje':''}">${s.n}<b>${pad(s.d.getDate())}/${pad(s.d.getMonth()+1)}</b></th>`).join('')+'</tr></thead>';
+  const corpo='<tbody>'+linhas.map(l=>`<tr><th>${l}</th>`+semana.map(s=>`<td class="${s.hoje?'hoje':''}">—</td>`).join('')+'</tr>').join('')+'</tbody>';
+  $(sel).innerHTML=cab+corpo;
+}
+grade('#g-semana',['Alimentação','Limpeza','Compromissos da família']);
+grade('#g-cardapio',['Café','Almoço','Lanche','Jantar']);
+const ABAS=['semana','cardapio','escola','casa','espera','dinheiro'];
+document.querySelectorAll('.tabs button').forEach(b=>b.addEventListener('click',()=>abrir(b.dataset.tab)));
+function abrir(t){
+  if(!ABAS.includes(t)) t='semana';
+  document.querySelectorAll('.tabs button').forEach(b=>b.classList.toggle('on',b.dataset.tab===t));
+  document.querySelectorAll('main section').forEach(s=>s.hidden=s.id!=='sec-'+t);
+  if(location.hash!=='#'+t) history.replaceState(null,'','#'+t);
+}
+window.addEventListener('hashchange',()=>abrir(location.hash.slice(1)));
+abrir(location.hash.slice(1)||'semana');
+</script>
